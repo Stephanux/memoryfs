@@ -16,17 +16,6 @@ window.onload = function (event) {
     var progressBar;
     var intervalId;
 
-    /*--- Fonction qui affiche la progression de la barre du compteur de temps */
-    var displayBar = function () {
-        currentBar++;
-        if (currentBar > maxBar) {
-            clearInterval(intervalId);
-            progressBar.value = 0;
-            if (confirm("Trop tard, temps de jeu terminé !")) initJeu();
-        }
-        progressBar.value = currentBar;
-    }
-
     // setTimeout(returnCards, 3000);   // memorisation pendant trois seconde
 
     /********************************************************************** */
