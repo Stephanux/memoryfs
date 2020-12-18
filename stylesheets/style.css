@@ -52,3 +52,8 @@
     color: white;
     background-image: url("../images/bgcard.png");
   } 
+
+  #compteur {
+    height: 50px;
+    width: 850px;
+  }

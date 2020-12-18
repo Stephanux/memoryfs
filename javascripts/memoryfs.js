@@ -112,6 +112,18 @@ window.onload = function (event) {
             clearInterval(intervalId);
         }
     }
+
+    /*--- Fonction qui affiche la progression de la barre du compteur de temps */
+    var displayBar = function () {
+        currentBar++;
+        if (currentBar > maxBar) {
+            clearInterval(intervalId);
+            currentBar = 0;
+            if (confirm("Trop tard, temps de jeu terminé !")) initJeu();
+        }
+        progressBar.value = currentBar;
+    }
+
     /*--- Appel à l'initialisation du jeu */
     initJeu();
 }
