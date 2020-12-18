@@ -43,11 +43,12 @@
   .flip-card-front {
     background-color: #bbb;
     color: black;
+    z-index: 10;
+    transform: rotateY(180deg);
   }
   
   /* Style the back side */
   .flip-card-back {
     color: white;
     background-image: url("../images/bgcard.png");
-    transform: rotateY(180deg);
   } 
