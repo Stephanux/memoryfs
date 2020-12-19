@@ -16,6 +16,7 @@ window.onload = function (event) {
     var currentBar = 0;
     var progressBar;
     var intervalId;
+    var datatable;
 
     // setTimeout(returnCards, 3000);   // memorisation pendant trois seconde
 
@@ -29,8 +30,19 @@ window.onload = function (event) {
         // Chargement des images du fichier cards.png sur un découpage tous les 100 pixels en hauteur (y)
         loadAndDrawImage("images/cards.png");
         // Lancement du jeu
+        datatable = $("#tabclassement").DataTable({
+            "dom": '<"top"l>t<"bottom" ip><"clear">',
+            "order": [[1, "asc"]],
+            "paging": true,
+            "processing": true,
+            "language": {
+                "loadingRecords": "&nbsp;",
+                "processing": "DataTables is currently busy",
+                "url": "javascripts/French.json"
+            }
+        });
         alert("Prêt(e) à jouer !");
-        intervalId = setInterval(displayBar, 1000); // dysplayBar est appelée toutes les 1000 millisecondes : 1 seconde
+        intervalId = setInterval(displayBar, 1000); // displayBar est appelée toutes les 1000 millisecondes : 1 seconde
     }
 
 
@@ -86,18 +98,18 @@ window.onload = function (event) {
             /*todo : ici on va calculer si les 2 images sont identiques via indice de grilleJeu */
             if (nbClick == 1) idCard1 = parseInt(evt.target.id.split('d')[1]);
             else idCard2 = parseInt(evt.target.id.split('d')[1]);  // un morceau d'information est une information !
-           /* if (flipedCards.indexOf(idCard1) !== -1 || flipedCards.indexOf(idCard2) !== -1) {
-                evt.stopPropagation();
-            } else */evt.target.parentElement.parentElement.classList.toggle('flip-action'); // on remote le DOM jusqu'a "flip-card-inner"
+            /*if (flipedCards.indexOf(idCard1) !== -1 || flipedCards.indexOf(idCard2) !== -1) {
+                return;
+            } else*/ evt.target.parentElement.parentElement.classList.toggle('flip-action'); // on remote le DOM jusqu'a "flip-card-inner"
         } else {
             if (nbClick == 1) idCard1 = parseInt(evt.target.parentElement.children[0].children[0].id.split('d')[1]);
             else idCard2 = parseInt(evt.target.parentElement.children[0].children[0].id.split('d')[1]);
             /*if (flipedCards.indexOf(idCard1) !== -1 || flipedCards.indexOf(idCard2) !== -1) {
-                evt.stopPropagation();
+                return;
             } else*/ evt.target.parentElement.classList.toggle('flip-action');
 
         }
-      
+
         /* test si une ou deux cartes sont retournées et si elles ont la même image */
         if (nbClick == 2) {
             iCard2 = grilleJeu[idCard2];
@@ -117,7 +129,29 @@ window.onload = function (event) {
             iCard1 = grilleJeu[idCard1];
         }
         if (score == 14) {
-            alert("Vous avez gagné en  : " + progressBar.value + " s.");
+            var nickname = prompt("Vous avez gagné en  : " + progressBar.value + " s", "Entrez votre Nickname pour figurer au classement...");
+            if (nickname) {
+                // On créé un objet XMLHttpRequest
+                let xhr = new XMLHttpRequest();
+                // On initialise notre requête avec la fonction open()
+                xhr.open("GET", "/setmemscore?nickname=" + nickname + "&score=" + progressBar.value);
+                // réponse format JSON
+                xhr.responseType = "json";
+                // On envoie la requête
+                xhr.send();
+                // Dès que la réponse est arrivée...
+                xhr.onload = function () {
+                    if (xhr.status != 200) {
+                        alert('Erreur : ' + xhr.status + " : " + xhr.statusText);
+                    } else {
+                        console.log(xhr.responseText.length + " octets téléchargés\n" + JSON.stringify(xhr.responseText));
+                    }
+                };
+                // Fonction de gestion d'une erreur de requête Ajax
+                xhr.onerror = function (err) {
+                    console.log("La requête à échoouée : " + err);
+                }
+            }
             clearInterval(intervalId);
         }
     }
@@ -136,3 +170,5 @@ window.onload = function (event) {
     /*--- Appel à l'initialisation du jeu */
     initJeu();
 }
+
+

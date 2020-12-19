@@ -1,0 +1,220 @@
+{
+    "GET/": {
+        "controler": "getView",
+        "view": "login",
+        "title": "Authentification"
+    },
+    "GET/index": {
+        "controler": "getView",
+        "view": "index",
+        "title": "Bienvenue dans le framework Node/Express MiniSmall"
+    },
+    "GET/memory": {
+        "controler": "finder",
+        "view": "memory",
+        "modelName": "Memory",
+        "sortfield": "score",
+        "order": 0,
+        "title": "It's thirteen O'Clock, time to make a MEMORY !"
+    },
+    "GET/setmemscore": {
+        "controler": "insertOne",
+        "modelName": "Memory",
+        "view": "memory",
+        "redirect": "/memory",
+        "return_type": "application/json"
+    },
+    "GET/logout": {
+        "controler": "logout",
+        "view": "login",
+        "title": "Bienvenue dans le framework Node/Express"
+    },
+    "GET/users": {
+        "controler": "populate",
+        "modelName": "Users",
+        "view": "usersCountry",
+        "pop_ref": "country"
+    },
+    "GET/exos": {
+        "controler": "finder",
+        "modelName": "Exercices",
+        "view": "exos"    
+    },
+    "GET/exosJSON": {
+        "controler": "finder",
+        "modelName": "Exercices",
+        "view": "exos",
+        "return_type": "application/json"
+    },
+    "GET/countries": {
+        "controler": "finder",
+        "modelName": "Countries",
+        "view": "countries"
+    },
+    "GET/countriesJSON": {
+        "controler": "finder",
+        "modelName": "Countries",
+        "view": "countries",
+        "return_type": "application/json"
+    },
+    "GET/formUser": {
+        "controler": "findByIdWithList",
+        "modelName": "Users",
+        "modelList": "Countries",
+        "view": "formUser",
+        "form_action": "/modifyUser"
+    },
+    "POST/modifyUser": {
+        "controler": "updateById",
+        "modelName": "Users",
+        "view": "modifyUser"
+    },
+    "GET/newUser": {
+        "controler": "finder",
+        "modelName": "Users",
+        "modelList": "Countries",
+        "view" : "formUser",
+        "form_action": "/createUser",
+        "title": "Create a new user",
+        "libelle": "creation"
+    },
+    "POST/createUser": {
+        "controler": "insertOne",
+        "modelName": "Users",
+        "view": "users"
+    },
+    "GET/deleteUser": {
+        "controler": "deleteById",
+        "modelName": "Users",
+        "view" : "users"
+    },
+    "GET/formations": {
+        "controler": "populate",
+        "modelName": "Formations",
+        "view": "liste_formations",
+        "title": "Liste des formations",
+        "pop_ref": "formateur"
+    },
+    "GET/tabFormations": {
+        "controler": "populate",
+        "modelName": "Formations",
+        "view": "tabformations",
+        "title": "Liste des formations",
+        "pop_ref": "formateur"
+    },
+    "GET/formFormation" :{
+        "controler": "findOneAndListSchemas",
+        "modelName": "Formations",
+        "modelList": ["Formateurs", "Countries"],
+        "view": "formFormation",
+        "form_action": "/modifyFormation",
+        "title":"Modification formation",
+        "libelle": "Modification",
+        "del_label": "cette Formation"
+    },
+    "GET/newFormation": {
+        "controler": "findListSchemas",
+        "modelList": ["Formateurs", "Countries"],
+        "view" : "formFormation",
+        "form_action": "/createFormation",
+        "title": "Create a new Formation",
+        "libelle": "Création"
+    },
+    "POST/createFormation": {
+        "controler": "insertOne",
+        "modelName": "Formations",
+        "view": "liste_formations"
+    },
+    "POST/modifyFormation": {
+        "controler": "updateById",
+        "modelName": "Formations",
+        "view": "modifyFormation"
+    },
+    "GET/deleteFormation": {
+        "controler": "deleteById",
+        "modelName": "Formations",
+        "view" : "liste_formations"
+    },
+    "GET/formateurs": {
+        "controler": "finder",
+        "modelName": "Formateurs",
+        "view": "liste_formateurs",
+        "title": "Liste des formateurs"
+    },
+    "GET/formFormateur" :{
+        "controler": "findById",
+        "modelName": "Formateurs",
+        "view": "formFormateur",
+        "form_action": "/modifyFormateur",
+        "title":"Modification formateur",
+        "libelle": "Modification",
+        "del_label": "ce Formateur"
+    },
+    "GET/newFormateur": {
+        "controler": "findListSchemas",
+        "modelList": ["Countries"],
+        "view" : "formFormateur",
+        "form_action": "/createFormateur",
+        "title": "Create a new Formateur",
+        "libelle": "Création"
+    },
+    "POST/createFormateur": {
+        "controler": "insertOne",
+        "modelName": "Formateurs",
+        "view": "liste_formateurs"
+    },
+    "POST/modifyFormateur": {
+        "controler": "updateById",
+        "modelName": "Formateurs",
+        "view": "modifyFormateur"
+    },
+    "GET/deleteFormateur": {
+        "controler": "deleteById",
+        "modelName": "Formateurs",
+        "view" : "liste_formateurs"
+    },
+    "GET/selectSQL": {
+        "controler": "selectSQL",
+        "sql_query": "SELECT * FROM countries",
+        "view": "countries"
+    },
+    "GET/selectFormateursSQL": {
+        "controler": "selectSQL",
+        "sql_query": "SELECT * FROM formateurs",
+        "view": "liste_formateurs"
+    },
+    "GET/newFormateurSQL" : {
+        "controler": "getView",
+        "view": "formFormateur",
+        "form_action": "/createFormateurSQL",
+        "title": "Create a new Formateur",
+        "libelle": "Création"
+    },
+    "POST/createFormateurSQL": {
+        "controler": "insertSQL",
+        "sql_query": "INSERT INTO formateurs (nom, prenom, specialite, prix_jour) VALUES (?,?,?,?)",
+        "params_query": ["nom", "prenom", "specialite", "prix_jour"],
+        "view": "liste_formateurs",
+        "redirect": "/selectFormateursSQL"
+    },
+    "GET/formFormateurSQL": {
+        "controler": "selectSQL",
+        "view": "formFormateur",
+        "sql_query": "SELECT * FROM formateurs WHERE id=?",
+        "form_action": "/modifyFormateurSQL",
+        "title":"Modification formateur",
+        "libelle": "Modification",
+        "del_label": "ce Formateur"
+    },
+    "POST/modifyFormateurSQL": {
+        "controler": "updateSQL",
+        "sql_query": "UPDATE formateurs SET nom=?, prenom=?, specialite=?, prix_jour=? WHERE id=?",
+        "params_query": ["nom", "prenom", "specialite", "prix_jour"],
+        "redirect": "/selectFormateursSQL"
+    },
+    "GET/deleteFormateurSQL": {
+        "controler": "deleteSQL",
+        "sql_query": "DELETE FROM formateurs WHERE id=?",
+        "redirect": "/selectFormateursSQL"
+    }
+}
