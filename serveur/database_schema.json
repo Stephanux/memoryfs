@@ -19,6 +19,7 @@
         "schema": {
             "_id": "ObjectId",
             "nickname": "String",
+            "format": "String",
             "score": "Number"
         }
     },
