@@ -105,7 +105,7 @@
             </div><br/>
             <li>On retrouve dans l'annuaire <b>"config_actions.json"</b> ci-dessus, le code qui permet de répondre à la requête HTTP <b>"GET/memory"</b>.<br/>
                 On voit ici que le contrôleur (le fichier javascript du dossier "routes") défini pour répondre à la requête est <b>finder"</b>".<br/>
-                On retrouve dans le dossier <b>"routes"</b> le fichier <b>"finder.js"</b> qui sera chargé et exécuté lorsque cette requête sera effectuée par un client.<be/>
+                On retrouve dans le dossier <b>"routes"</b> le fichier <b>"finder.js"</b> qui sera chargé et exécuté lorsque cette requête sera effectuée par un client.<br/><br/>
                 <div id="editor2_wrapper" class="app_editor_wrapper">
                 <div id="editor2" class="app_editor">
 var express = require('express');
@@ -144,8 +144,62 @@ router.get('/', function (req, res, next) {
 module.exports = router;
                 </div>
                 <div id="editor2_dragbar" class="app_editor_dragbar"></div>
-            </div
+            </div><br/>
             </li>
+            <li>Voici un extrait de code du contrôleur <b>"finder.js"</b> et plus particulièrement la fonction get(...) qui répond à la demande <b>"GET/memory"</b>.<br/>
+                La ligne important ici pour l'exécution de la requête est : <br/><br/>
+                <pre><b>global.schemas[req.message.modelName].find({}).sort(sortedfield).lean().exec( function (err, result) { ...</b></pre><br/>
+                Ici on récupère l'instance du schéma <b>"Mongoose"</b> stocké dans le fichier <b>"database_schema.json"</b>, fichier lu au démarrage de l'application dans le fichier <b>"appdyn.js"</b>.<br/>
+                Un extrait du fichier de description des collections de la base de données : <br/>
+                <div id="editor3_wrapper" class="app_editor_wrapper">
+                <div id="editor3" class="app_editor">
+{
+	"Countries" : {
+		"collection" : "countries",
+		"schema": {
+        	"_id": "ObjectId",
+	    	"code": "String",
+	    	"name": "String"
+    	}
+    },
+    "Memory": {
+        "collection": "memory",
+        "schema": {
+            "_id": "ObjectId",
+            "nickname": "String",
+            "format": "String",
+            "score": "Number"
+        }
+    },
+    "Users": {
+        "collection": "users",
+        "schema": {
+            "_id": "ObjectId",
+            "name": "String",
+            "firstName": "String",
+            "login": "String",
+            "mdp": "String",
+            "function": "String",
+            "office": "String",
+            "date_naiss": "String",
+            "adresse1": "String",
+            "adresse2": "String",
+            "cp": "String",
+            "city": "String",
+            "country": {
+                "type": "ObjectId",
+                "ref": "Countries"
+            },
+            "mobile_phone": "String",
+            "home_phone": "String"
+        }
+    }
+}
+                </div>
+                <div id="editor3_dragbar" class="app_editor_dragbar"></div>
+            </div><br/>
+            </li>
+
        </ul>
     </ul>
 </ul>
@@ -154,14 +208,18 @@ module.exports = router;
 
 var aceEditorInstance = ace.edit( "editor1" );
 aceEditorInstance.setReadOnly(true)
-aceEditorInstance.setTheme("ace/theme/monokai");
+aceEditorInstance.setTheme("ace/theme/dracula");
 aceEditorInstance.getSession().setMode( { path: "ace/mode/json", inline: true } );
 
 var aceEditorInstance2 = ace.edit( "editor2" );
 aceEditorInstance2.setReadOnly(true)
-aceEditorInstance2.setTheme("ace/theme/monokai");
+aceEditorInstance2.setTheme("ace/theme/dracula");
 aceEditorInstance2.getSession().setMode( { path: "ace/mode/javascript", inline: true } );
 
+var aceEditorInstance = ace.edit( "editor3" );
+aceEditorInstance.setReadOnly(true)
+aceEditorInstance.setTheme("ace/theme/dracula");
+aceEditorInstance.getSession().setMode( { path: "ace/mode/json", inline: true } );
 /**
  * Global variable to store the ids of the status of the current dragged ace editor.
  */
@@ -245,5 +303,7 @@ function makeAceEditorResizable(editor){
 
 makeAceEditorResizable(aceEditorInstance);
 makeAceEditorResizable(aceEditorInstance2);
+makeAceEditorResizable(aceEditorInstance3);
+
 </script>
 <!--img src="images/docback.png" /-->
