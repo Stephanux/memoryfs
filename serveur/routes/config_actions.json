@@ -1,13 +1,13 @@
 {
     "GET/": {
         "controler": "getView",
-        "view": "login",
-        "title": "Authentification"
+        "view": "index",
+        "title": "Bienvenue sur la page Recrutement formateur Full Stack pour O'Clock."
     },
     "GET/index": {
         "controler": "getView",
         "view": "index",
-        "title": "Bienvenue dans le framework Node/Express MiniSmall"
+        "title": "Bienvenue sur la page Recrutement formateur Full Stack pour O'Clock."
     },
     "GET/memory": {
         "controler": "finder",
@@ -23,6 +23,16 @@
         "view": "memory",
         "redirect": "/memory",
         "return_type": "application/json"
+    },
+    "GET/docihm": {
+        "controler": "getView",
+        "view": "docihm",
+        "title": "Etude et analyse du code du jeu : l'IHM."
+    },
+    "GET/docback": {
+        "controler": "getView",
+        "view": "docback",
+        "title": "Etude et analyse du code du jeu : Back-End."
     },
     "GET/logout": {
         "controler": "logout",

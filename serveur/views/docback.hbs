@@ -1,0 +1,33 @@
+<h1>{{title}}</h1>
+<p>Ce petit serveur propose l'accès au jeu du Memory.</p>
+
+<h2> Documentation partie serveur</h2>
+<br/>
+<ul>
+    <!--li> <h3> Page du jeux : </h3>
+        <ul>
+            <li>HTML5 : la structure est en HTML intégré dans un template Handlebars pour affichage données du classement</li>
+            <li>CSS3 : Dans la mesure de mes connaissances, j'ai intégré Bootstrap pour la grille du jeux</li>
+            <li>JS : Ecrit en grande partir en JavaScript Vanilla ES5. Utilisation de JQuery pour le tableau du classement (Datatable)</li>
+        </ul>
+    </li-->
+    <li> <h3> Technologie Back-End : </h3>
+        <ul>
+            <li>Le moteur d'exécution est Node JS V v12.18.4</li>
+            <ul>
+                <li>Node JS est utilisé ici avec le module "Express" pour la gestion des requêtes HTTP et la gestion des routes.</li>
+                <li>Cependant, on utilise ici un framework <a href="https://www.github.com/Stephanux/Minismall">"MiniSmall"</a> : pour simplifier le développement et la maintenance</li>
+            </ul>
+            <li>La base de données est une MongoDB : mongodb version v3.6.9. 
+            <li>L'application charge le module Mongoose pour la connexion à la base NoSQL.</li>
+        </ul>
+    </li>
+    <li> <h3> Voyons plus en détail le Framework MiniSmall </h3></li>
+        <ul>
+            <li>Le principe de ce Framework est celui d'un automate fini. On pourrait le voir comme un Orgue de Barbarie.<br/> 
+            En effet, nous avons un ensemble d'actions qui sont stockées dans un fichier JSON.<br/> 
+            On l'appelle l'Annuaire des actions et le fichier se nomme "<b>routes/config_actions.json"</b>.
+            </li>
+        </ul>
+</ul>
+<!--img src="images/docback.png" /-->
