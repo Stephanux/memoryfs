@@ -41,7 +41,7 @@ table#tabclassement.dataTable tbody tr:hover {
   background-color: #3fc3a7;
 }
 
-table#tabclassement..dataTable tbody tr:hover > .sorting_1 {
+table#tabclassement.dataTable tbody tr:hover > .sorting_1 {
   background-color: #3fc3a7;
 }
 
@@ -84,6 +84,18 @@ div.dataTables_wrapper div.dataTables_paginate {
   float:left;
   width: 79%;
 }
+
+#editor {
+  margin-left: 0px;
+  margin-top: 0px;
+  margin-right: 0px;
+  position: relative;
+  top: 0px;
+  bottom: 0;
+  left: 0px;
+  right: 0px;
+}
+
 
 .square {
     padding-top: 15px;
@@ -163,3 +175,19 @@ div.dataTables_wrapper div.dataTables_paginate {
     background: white;
   }
   
+  .app_editor {
+    height: 480px;
+  }
+  
+  .app_editor_wrapper {
+    background-color: #cccccc;
+    border-bottom: 1px solid #222222;
+  }
+  
+  .app_editor_dragbar {
+    background-color: #222222;
+    width: 100%;
+    height: 2px;
+    cursor: row-resize;
+    opacity: 1;
+  }

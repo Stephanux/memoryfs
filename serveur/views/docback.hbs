@@ -2,7 +2,7 @@
 <p>Ce petit serveur propose l'accès au jeu du Memory.</p>
 
 <h2> Documentation partie serveur</h2>
-<br/>
+<br />
 <ul>
     <!--li> <h3> Page du jeux : </h3>
         <ul>
@@ -11,35 +11,239 @@
             <li>JS : Ecrit en grande partir en JavaScript Vanilla ES5. Utilisation de JQuery pour le tableau du classement (Datatable)</li>
         </ul>
     </li-->
-    <li> <h3> Technologie Back-End : </h3>
+    <li>
+        <h3> Technologie Back-End : </h3>
         <ul>
             <li>Le moteur d'exécution est Node JS V v12.18.4</li>
             <ul>
-                <li>Node JS est utilisé ici avec le module "Express" pour la gestion des requêtes HTTP et la gestion des routes.</li>
-                <li>Cependant, on utilise ici un framework <a href="https://www.github.com/Stephanux/Minismall">"MiniSmall"</a> : pour simplifier le développement et la maintenance</li>
+                <li>Node JS est utilisé ici avec le module "Express" pour la gestion des requêtes HTTP et la gestion des
+                    routes.</li>
+                <li>Cependant, on utilise ici un framework <a
+                        href="https://www.github.com/Stephanux/Minismall">"MiniSmall"</a> : pour simplifier le
+                    développement et la maintenance</li>
             </ul>
-            <li>La base de données est une MongoDB : mongodb version v3.6.9. 
+            <li>La base de données est une MongoDB : mongodb version v3.6.9.
             <li>L'application charge le module Mongoose pour la connexion à la base NoSQL.</li>
         </ul>
     </li>
-    <li> <h3> Voyons plus en détail le Framework MiniSmall </h3></li>
-        <ul>
-            <li>Le principe de ce Framework est celui d'un automate fini. On pourrait le voir comme un Orgue de Barbarie.<br/> 
-            En effet, nous avons un ensemble d'actions qui sont stockées dans un fichier JSON.<br/> 
+    <li>
+        <h3> Voyons plus en détail le Framework MiniSmall </h3>
+    </li>
+    <ul>
+        <li>Le principe de ce Framework est celui d'un automate fini. On pourrait le voir comme un Orgue de
+            Barbarie.<br />
+            En effet, nous avons un ensemble d'actions qui sont stockées dans un fichier JSON.<br />
             On l'appelle l'Annuaire des actions et le fichier se nomme "<b>routes/config_actions.json"</b>.
-            </li>
-            <li>Regardons l'arborescence du côté Back-End de notre projet de jeu Memory dans le dossier "serveur":<br/><br/><img src="/images/docback_arbo.png" alt="arborescence projet MiniSmall" /></li>
-            <li>Nous allons également voir un schéma qui détaille une requête HTTP pour afficher l'écran du jeu de Memory.<br/><br/><img src="images/docback_http_request.png" alt="schéma d'une requête http dans l'application"/></li>
-            <li>L'accès à la base de données se fait dans les fichiers "contrôleurs" qui se trouvent dans le répertoire routes.<br/>
-                Le principe du framework ici est de proposer des modules (classes) génériques qui réalise les princpaux accès à une base de données :</li>
-                <ul>
-                    <li>La sélection de données (toutes ou filtrées)</li>
-                    <li>La mise à jour des données</li>
-                    <li>L'insertion de données</li>
-                    <li>La suppression de données</li>
-                </ul>
-            <li></li>
-
+        </li>
+        <li>Regardons l'arborescence du côté Back-End de notre projet de jeu Memory dans le dossier
+            "serveur":<br /><br /><img src="/images/docback_arbo.png" alt="arborescence projet MiniSmall" /></li>
+        <li>Nous allons également voir un schéma qui détaille une requête HTTP pour afficher l'écran du jeu de
+            Memory.<br /><br /><img src="images/docback_http_request.png"
+                alt="schéma d'une requête http dans l'application" /></li>
+        <li>L'accès à la base de données se fait dans les fichiers "contrôleurs" qui se trouvent dans le répertoire
+            routes.<br />
+            Le principe du framework ici est de proposer des modules (classes) génériques qui réalise les princpaux
+            accès à une base de données :</li>
+        <ul>
+            <li>La sélection de données (toutes ou filtrées)</li>
+            <li>La mise à jour des données</li>
+            <li>L'insertion de données</li>
+            <li>La suppression de données</li>
         </ul>
+        <li>Dans notre application de Memory, l'action du menu "Jeu Memory" est à l'origine d'une requête HTTP dont la
+            méthode et "GET".<br />
+            Et l'action, aussi appelé "pathname" est "/memory". Cela permet d'afficher l'interface du jeu où l'on peu
+            sélectionner le<br />
+            format de la grille de jeu. Mais elle affiche aussi le classement des scores par format de grille dans un
+            tableau à droite.<br />
+            Pour ce faire, il faut que l'on fasse une requête dans la base de données MongoDB et que l'on affiche les
+            données sous la forme d'un<br />
+            tableau.
+        </li>
+        <ul>
+            <li>L'annuaire d'actions : routes/config_actions.json</li><br />
+            <div id="editor1_wrapper" class="app_editor_wrapper">
+                <div id="editor1" class="app_editor">{
+    "GET/": {
+        "controler": "getView",
+        "view": "index",
+        "title": "Bienvenue sur la page Recrutement formateur Full Stack pour O'Clock."
+    },
+    "GET/index": {
+        "controler": "getView",
+        "view": "index",
+        "title": "Bienvenue sur la page Recrutement formateur Full Stack pour O'Clock."
+    },
+    "GET/memory": {
+        "controler": "finder",
+        "view": "memory",
+        "modelName": "Memory",
+        "sortfield": "score",
+        "order": 0,
+        "title": "It's thirteen O'Clock, time to make a MEMORY !"
+    },
+    "GET/setmemscore": {
+        "controler": "insertOne",
+        "modelName": "Memory",
+        "view": "memory",
+        "redirect": "/memory",
+        "return_type": "application/json"
+    },
+    "GET/docihm": {
+        "controler": "getView",
+        "view": "docihm",
+        "title": "Etude et analyse du code du jeu : l'IHM."
+    },
+    "GET/docback": {
+        "controler": "getView",
+        "view": "docback",
+        "title": "Etude et analyse du code du jeu : Back-End."
+    }
+}
+                </div>
+                <div id="editor1_dragbar" class="app_editor_dragbar"></div>
+            </div><br/>
+            <li>On retrouve dans l'annuaire <b>"config_actions.json"</b> ci-dessus, le code qui permet de répondre à la requête HTTP <b>"GET/memory"</b>.<br/>
+                On voit ici que le contrôleur (le fichier javascript du dossier "routes") défini pour répondre à la requête est <b>finder"</b>".<br/>
+                On retrouve dans le dossier <b>"routes"</b> le fichier <b>"finder.js"</b> qui sera chargé et exécuté lorsque cette requête sera effectuée par un client.<be/>
+                <div id="editor2_wrapper" class="app_editor_wrapper">
+                <div id="editor2" class="app_editor">
+var express = require('express');
+var router = express.Router();
+
+/* GET users listing. */
+router.get('/', function (req, res, next) {
+    /*if ((req.session.passport) && (req.session.passport.user != null)) {*/
+        if (global.actions_json[req.message.action].sortfield) var sortedfield = global.actions_json[req.message.action].sortfield;
+        global.schemas[req.message.modelName].find({}).sort(sortedfield).lean().exec( function (err, result) {
+            if (err) {
+                throw err;
+            }
+            console.log("connexion depuis Finder : ", result);
+            if (req.message.return_type == null) {
+                res.render(req.message.view, {
+                    stitle: 'First Cnx Mongo',
+                    title: req.message.title,
+                    libelle: req.message.libelle,
+                    del_label: req.message.del_label,
+                    form_action: req.message.form_action,
+                    data: result  // Attention a renvoyer une variable avec un nom generique
+                });
+                //}
+
+            } else {
+                res.setHeader('content-type', 'application/json');
+                res.send(result);
+            }
+        });
+  /*  } else {
+        res.redirect('/');  // affichage boîte de login si pas authentifié
+    }*/
+});
+
+module.exports = router;
+                </div>
+                <div id="editor2_dragbar" class="app_editor_dragbar"></div>
+            </div
+            </li>
+       </ul>
+    </ul>
 </ul>
+
+<script>
+
+var aceEditorInstance = ace.edit( "editor1" );
+aceEditorInstance.setReadOnly(true)
+aceEditorInstance.setTheme("ace/theme/monokai");
+aceEditorInstance.getSession().setMode( { path: "ace/mode/json", inline: true } );
+
+var aceEditorInstance2 = ace.edit( "editor2" );
+aceEditorInstance2.setReadOnly(true)
+aceEditorInstance2.setTheme("ace/theme/monokai");
+aceEditorInstance2.getSession().setMode( { path: "ace/mode/javascript", inline: true } );
+
+/**
+ * Global variable to store the ids of the status of the current dragged ace editor.
+ */
+window.draggingAceEditor = {};
+
+function makeAceEditorResizable(editor){
+    var id_editor = editor.container.id;
+    var id_dragbar = id_editor + '_dragbar';
+    var id_wrapper =  id_editor + '_wrapper';
+    var wpoffset = 0;
+    window.draggingAceEditor[id_editor] = false;
+
+    var action_mousedown = function(e) {
+        e.preventDefault();
+
+        window.draggingAceEditor[id_editor] = true;
+
+        // Set editor opacity to 0 to make transparent so our wrapper div shows
+        document.getElementById(id_editor).style.opacity = 0;
+    
+        document.addEventListener("mousemove", action_document_mousemove);
+    };
+
+    var action_document_mousemove = function(e){
+        var _editor = document.getElementById(id_editor);
+        var rect = _editor.getBoundingClientRect();
+
+        var rsl = {
+            top: rect.top + document.body.scrollTop
+        };
+
+        var top_offset = rsl.top - wpoffset;
+
+        var actualY = e.pageY - wpoffset;
+
+        // editor height
+        var eheight = actualY - top_offset;
+        
+        // Set wrapper height
+        document.getElementById(id_wrapper).style.height = eheight;
+        
+        // Set dragbar opacity while dragging (set to 0 to not show)
+        document.getElementById(id_dragbar).style.opacity =  0.15;
+    };
+
+    document.getElementById(id_dragbar).addEventListener("mousedown", action_mousedown);
+ 
+    var action_mouseup = function(e){
+        if (window.draggingAceEditor[id_editor])
+        {
+            var ctx_editor = document.getElementById(id_editor);
+            
+            var rect = ctx_editor.getBoundingClientRect();
+
+            var rsl = {
+                top: rect.top + document.body.scrollTop
+            };
+
+            var actualY = e.pageY - wpoffset;
+            var top_offset = rsl.top - wpoffset;
+            var eheight = actualY - top_offset;
+            
+            document.removeEventListener("mousemove", action_document_mousemove);
+            
+            // Set dragbar opacity back to 1
+            document.getElementById(id_dragbar).style.opacity = 1;
+            
+            // Set height on actual editor element, and opacity back to 1
+            ctx_editor.style.height = eheight + "px";
+            ctx_editor.style.opacity = 1;
+            
+            // Trigger ace editor resize()
+            editor.resize();
+
+            window.draggingAceEditor[id_editor] = false;
+        }
+    };
+
+    document.addEventListener("mouseup", action_mouseup);
+}
+
+makeAceEditorResizable(aceEditorInstance);
+makeAceEditorResizable(aceEditorInstance2);
+</script>
 <!--img src="images/docback.png" /-->
