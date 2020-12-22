@@ -339,7 +339,8 @@ module.exports = dynamicRouter;
     }
                 </pre>
             </li>
-            <li>Le contrôleur, défini dans l'annuaire d'actions <b>"config_actions.json"</b> est instancié dans la variable <b>"instanceModule"</b>, puis il est chargé en mémoire et exécuté pour lire les données du classment dans la base MongoDB</li>
+            <li>Le contrôleur, défini dans l'annuaire d'actions <b>"config_actions.json"</b> est instancié dans la variable <b>"instanceModule"</b>, 
+            puis il est chargé en mémoire et exécuté pour lire les données du classement dans la base MongoDB</li>
 
             <li>Les données sont retournées à la vue <b>"views/memory.hbs"</b> via la fonction handlebars <b>"res.render("template", { data : result})</b></li>
 
