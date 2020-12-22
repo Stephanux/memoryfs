@@ -51,7 +51,7 @@ mongoClient.connect(url, { useUnifiedTopology: true }, function (err, client) {
   console.log("Connected successfully to server: global.db initialized");
 });
 
-// connexion depuis mongoose
+// Connexion à MongoDB depuis Mongoose
 global.schemas = {};
 var mongoose = require('mongoose');
 mongoose.connect(config.mongoose.url, { useNewUrlParser: true, useUnifiedTopology: true }, function (err) {
