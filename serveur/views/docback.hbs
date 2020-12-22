@@ -27,15 +27,15 @@
             Barbarie.<br />
             <ul>
             <li>En effet, nous avons un ensemble d'actions qui sont stockées dans un fichier JSON, que l'on peut le comparer aux feuilles trouées de l'Orgue de barbarie.
-            Pour ce dernier les notes sont produite en fonction de la position du trou dans la feuille. Et l'automate qu'est l'Orgue de barbarie joue le morceaux de musique
-            décrit par l'ensemble des trous de la <b>"partition"</b>. En fait MiniSmall fonctionne de la même manière, le ficher annuaire d'actions <b>"config_actions.json"</b>
-            est la feuille trouée et ici le <b>"dynamicRouteur.js</b> est l'orgue de barbarie, il réalise les actions demandées dans le fichier annuaire.
+            Pour ce dernier les notes sont produites en fonction de la position du trou dans la feuille. Et l'automate qu'est l'Orgue de barbarie joue le morceau de musique
+            décrit par l'ensemble des trous de la <b>"partition"</b>. En fait <b>"MiniSmall"</b> fonctionne de la même manière, le fichier annuaire d'actions <b>"config_actions.json"</b>
+            est la feuille trouée et ici le <b>"dynamicRouteur.js"</b> est l'Orgue de Barbarie, il réalise les actions demandées (configurée) dans le fichier annuaire.
             On l'appelle l'Annuaire des actions et le fichier se nomme "<b>routes/config_actions.json"</b>.</li>
             </ul>
         </li>
         <li>Regardons l'arborescence du côté Back-End de notre projet de jeu Memory dans le dossier "serveur":<br /><br /><img src="/images/docback_arbo.png" alt="arborescence projet MiniSmall" /></li>
         <li>Nous allons également voir un schéma qui détaille une requête HTTP pour afficher l'écran du jeu de Memory.<br /><br /><img src="images/docback_http_request.png" alt="schéma d'une requête http dans l'application" /></li>
-        <li>L'accès à la base de données se fait dans les fichiers "contrôleurs" qui se trouvent dans le répertoire routes.<br /> Le principe du framework ici est de proposer des modules (classes) génériques qui réalise les princpaux accès à une base de données :</li>
+        <li>L'accès à la base de données se fait dans les fichiers "contrôleurs" qui se trouvent dans le répertoire routes.<br /> Le principe du framework ici est de proposer des modules (classes) génériques qui réalisent les princpaux accès à une base de données :</li>
         <ul>
             <li>La sélection de données (toutes ou filtrées)</li>
             <li>La mise à jour des données</li>
