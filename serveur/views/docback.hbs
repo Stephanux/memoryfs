@@ -45,15 +45,10 @@
             <li>L'insertion de données</li>
             <li>La suppression de données</li>
         </ul>
-        <li>Dans notre application de Memory, l'action du menu "Jeu Memory" est à l'origine d'une requête HTTP dont la
-            méthode et "GET".<br />
-            Et l'action, aussi appelé "pathname" est "/memory". Cela permet d'afficher l'interface du jeu où l'on peu
-            sélectionner le<br />
-            format de la grille de jeu. Mais elle affiche aussi le classement des scores par format de grille dans un
-            tableau à droite.<br />
-            Pour ce faire, il faut que l'on fasse une requête dans la base de données MongoDB et que l'on affiche les
-            données sous la forme d'un<br />
-            tableau.
+        <li>Dans notre application de Memory, l'action du menu "Jeu Memory" est à l'origine d'une requête HTTP dont la méthode est "GET"<br />
+            et l'action, aussi appelée "pathname" est "/memory". Cela permet d'afficher l'interface du jeu où l'on peut sélectionner le<br />
+            format de la grille de jeu. Mais elle affiche aussi le classement des scores par format de grille dans un tableau à droite.<br />
+            Pour ce faire, il faut que l'on fasse une requête dans la base de données MongoDB et que l'on affiche les données sous la forme d'un tableau.
         </li>
         <ul>
             <li>L'annuaire d'actions : routes/config_actions.json</li><br />
@@ -99,7 +94,7 @@
                 <div id="editor1_dragbar" class="app_editor_dragbar"></div>
             </div><br/>
             <li>On retrouve dans l'annuaire <b>"config_actions.json"</b> ci-dessus, le code qui permet de répondre à la requête HTTP <b>"GET/memory"</b>.<br/>
-                On voit ici que le contrôleur (le fichier javascript du dossier "routes") défini pour répondre à la requête est <b>finder"</b>".<br/>
+                On voit ici que le contrôleur défini pour répondre à la requête est <b>"finder"</b>.<br/>
                 On retrouve dans le dossier <b>"routes"</b> le fichier <b>"finder.js"</b> qui sera chargé et exécuté lorsque cette requête sera effectuée par un client.<br/><br/>
                 <div id="editor2_wrapper" class="app_editor_wrapper">
                 <div id="editor2" class="app_editor">
@@ -142,10 +137,10 @@ module.exports = router;
             </div><br/>
             </li>
             <li>Voici un extrait de code du contrôleur <b>"finder.js"</b> et plus particulièrement la fonction get(...) qui répond à la demande <b>"GET/memory"</b>.<br/>
-                La ligne important ici pour l'exécution de la requête est : <br/><br/>
+                La ligne importante ici pour l'exécution de la requête est : <br/><br/>
                 <pre><b>global.schemas[req.message.modelName].find({}).sort(sortedfield).lean().exec( function (err, result) { ...</b></pre><br/>
                 Ici on récupère l'instance du schéma <b>"Mongoose"</b> stocké dans le fichier <b>"database_schema.json"</b>, fichier lu au démarrage de l'application dans le fichier <b>"appdyn.js"</b>.<br/>
-                Un extrait du fichier de description des <b>"Schémas"</b> (collections) de la base de données MongoDB : <br/><br/>
+                Voici un extrait du fichier de description des <b>"Schémas"</b> (collections) de la base de données MongoDB : <br/><br/>
                 <div id="editor3_wrapper" class="app_editor_wrapper">
                 <div id="editor3" class="app_editor">
 {
@@ -213,14 +208,14 @@ for (modelName in database_schemas) {
     database_schemas[modelName].collection);
 }</b></pre><br/>
             </li>
-            <li> Dans le premier paragraphe, on utilise une variable globale du fichier de configuration général <b>"config_minismall.json"</b> : <b>"config.mongoose.url"</b><br/>
+            <li> Dans le premier paragraphe, on utilise une variable globale du fichier de configuration générale <b>"config_minismall.json"</b> : <b>"config.mongoose.url"</b><br/>
                 pour récupérer l'URL de connexion à la base de données.<br/>
                 Dans le deuxième paragraphe, on charge le fichier <b>"database_schemas.json"</b>, et pour chaque nom de modèle <b>"modelName"</b> on associe la <b>collection</b><br/> au schéma via
-                la fonction Mongoose <b>"mongoose.model(modelName, schema, collection)"</b> qui stocke dans un objet global <b>"schemas"</b> qui l'on pourra utiliser dans les <b>"contrôleurs"</b>
+                la fonction Mongoose <b>"mongoose.model(modelName, schema, collection)"</b> qui stocke dans un objet global <b>"schemas"</b> que l'on pourra utiliser dans les <b>"contrôleurs"</b>
                 pour réaliser les requêtes sur la base MongoDB.
             </li>
-            <li>Voyons maintenant le code du coeur du framework MiniSMall, le <b>"dynamicRouteur.js"</b>, il récupère les données de la requête et construit un objet <b>Message</b> qu'il accroche à l'objet <b>"req"</b> définie par Express
-                et il charge le <b>"contrôleur"</b> que le développeur à définie dans l'annuaire d'actions (<b>"config_actions.json"</b>) puis l'appelle pour réaliser le traitement.
+            <li>Voyons maintenant le code du coeur du framework MiniSMall, le <b>"dynamicRouteur.js"</b>. Il récupère les données de la requête et construit un objet <b>Message</b> qu'il accroche à l'objet <b>"req"</b> défini par Express
+                et il charge le <b>"contrôleur"</b> que le développeur a défini dans l'annuaire d'actions (<b>"config_actions.json"</b>) puis l'appelle pour réaliser le traitement.
                 <br/><br/>
                 <div id="editor4_wrapper" class="app_editor_wrapper">
                 <div id="editor4" class="app_editor">
