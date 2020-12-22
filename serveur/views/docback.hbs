@@ -325,6 +325,50 @@ module.exports = dynamicRouter;
                 <div id="editor4_dragbar" class="app_editor_dragbar"></div>
             </div><br/>
             </li>
+            <li>A la fin du <b>"dynamicRouter</b> on peut voir le code qui charge le <b>"contrôleur"</b> depuis le dossier <b>"routes"</b> :
+                <pre>
+    <i>// Si l'action n'est pas définie dans l'annuaire, on log l'erreur</i>
+    if (typeof global.actions_json[req.message.action] == 'undefined') {
+        console.log("Erreur: Pas d'action dans l'annuaire config_actions.json : " + path);
+        next();
+    }
+    else {
+        <b>instanceModule = require('./routes/' + req.message.controler);
+        router.use(path, instanceModule);</b>
+        next();
+    }
+                </pre>
+            </li>
+            <li>Le contrôleur, défini dans l'annuaire d'actions <b>"config_actions.json"</b> est instancié dans la variable <b>"instanceModule"</b>, puis il est chargé en mémoire et exécuté pour lire les données du classment dans la base MongoDB</li>
+
+            <li>Les données sont retournées à la vue <b>"views/memory.hbs"</b> via la fonction handlebars <b>"res.render("template", { data : result})</b></li>
+
+            <li>Voici le code de la vue qui va permettre la création du tableau à l'aide des instructions Handlebars de boucles <b>"&#123;&#123;#each array}} ... &#123;&#123;/each}}</b>.
+                <pre><b>
+                &lt;table id="tabclassement" class="table table-striped table-bordered cell-border hover">
+                    &lt;thead>
+                        &lt;tr>
+                            &lt;th colspan="4">&lt;h4 style="text-align: center;">Classement joueurs&lt;/h4>&lt;/th>
+                        &lt;/tr>
+                        &lt;tr>
+                            &lt;th>Rang&lt;/th>
+                            &lt;th>Nickname&lt;/td>
+                            &lt;th class="select-filter">Format (LxC)&lt;/th>
+                            &lt;th>Score (en secondes)&lt;/td>
+                        &lt;/tr>
+                    &lt;/thead>
+                    &lt;tbody>
+                       &#123;&#123;#each data}}
+                        &lt;tr>
+                            &lt;td>&lt;/td>
+                            &lt;td>{{this.nickname}}&lt;/td>
+                            &lt;td>{{this.format}}&lt;/td>
+                            &lt;td>{{this.score}}&lt;/td>
+                        &lt;/tr>
+                        &#123;&#123;/each}}
+                    &lt;/tbody>
+               &lt;/table></b></pre>
+            </li>
        </ul>
     </ul>
 </ul>
