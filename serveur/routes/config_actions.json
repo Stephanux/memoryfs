@@ -34,6 +34,11 @@
         "view": "docback",
         "title": "Etude et analyse du code du jeu : Back-End."
     },
+    "GET/docker": {
+        "controler": "getView",
+        "view": "dockerize",
+        "title": "Tutoriel de mise en place de containers Docker pour le déploiement de l'Application Memory"
+    },
     "GET/logout": {
         "controler": "logout",
         "view": "login",

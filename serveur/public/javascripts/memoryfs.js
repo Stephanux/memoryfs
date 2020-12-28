@@ -221,6 +221,7 @@ window.onload = function (event) {
                     clearInterval(intervalId);
                     // On demande le surnom (nickname) du joueur pour l'enregistrement dans le classement
                     var nickname = prompt("Vous avez gagné en  : " + progressBar.value + " s", "Entrez votre Nickname pour figurer au classement...");
+                    if (nickname=="Entrez votre Nickname pour figurer au classement...") nickname = "John Doe"
                     if (nickname) {   // requpete Ajax JS Jquery et vanilla :-)
                         var jqxhr = $.get("/setmemscore?nickname=" + nickname + "&score=" + progressBar.value + "&format=" + formatGrille.value, function () {
                             console.log("success");

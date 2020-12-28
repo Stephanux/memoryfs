@@ -1,0 +1,533 @@
+<h1>{{title}}</h1>
+<p>Ce petit serveur propose l'accès au jeu du Memory.</p>
+
+<h2> Documentation création d'un environnement d'exécution Docker</h2>
+<br />
+<h4>NB : Utilisation d'une machine virtuelle Ubuntu 20.04 pour réaliser l'installation de Docker. En effet pour des raisons de configuration professionnelles de mon ordinateur personnel je ne pouvais pas le faire sur ma machine physique.</h4>
+<ul>
+    <li>
+        <h3>Ressources pédagogiques :</h3>  
+        <ul>
+            <li>Un petit tutoriel pour comprendre ce qu'est Docker et ce qu'il n'est pas :<br/>
+        <a href="https://medium.com/@Zakariae.elalaoui/initiation-%C3%A0-docker-29569671d433">Initiation à Docker</a></li> 
+            <li>
+                Le Docker hub pour retrouver une image déjà construite
+                <a href="https://hub.docker.com/search?q=&type=image">Initiation à Docker</a>
+            </li>
+            <li>Ce qu'il faut retenir c'est que Docker est un environnement d'éxécution de Linux isolés grâce à LXC (LinuX Containers).<br/>
+                 Mais ils partagent le même noyaux système, celui de la machine Hôte.<br/>
+                 Cette isolation peut se faire grâce aux <b>CGroups</b> (Control Groups). <br/>
+                 Les <b>Namespaces</b> permettent d'empêcher qu'un container accède à un autre conteneur
+                 sauf si vous l'avez explicitement définit (Docker-compose).
+            </li>
+        </ul>
+    </li>
+    <li>
+        <h3> Déployer une application NodeJS-Express / MongoDB avec un container Docker : </h3>
+        <ul>
+            <li><b>Installer Docker sur un système Linux Ubuntu 20.04</b></li><br/>
+            <ul>
+                <li>Pour installer Docker il faut dans un premier temps mettre à jour les dépôts du système :<br/>
+                <pre><b>cordova@Ubuntu-VirtualBox:~$ sudo apt update</b>
+Atteint :1 http://fr.archive.ubuntu.com/ubuntu focal InRelease
+Atteint :2 http://fr.archive.ubuntu.com/ubuntu focal-updates InRelease               
+Réception de :3 http://security.ubuntu.com/ubuntu focal-security InRelease [109 kB]  
+Atteint :4 http://fr.archive.ubuntu.com/ubuntu focal-backports InRelease                                              
+Atteint :5 https://download.docker.com/linux/ubuntu focal InRelease                                                       
+Atteint :6 https://download.mono-project.com/repo/ubuntu stable-focal InRelease                                                    
+Atteint :7 http://packages.microsoft.com/repos/vscode stable InRelease                            
+109 ko réceptionnés en 1s (124 ko/s)
+Lecture des listes de paquets... Fait
+Construction de l'arbre des dépendances       
+Lecture des informations d'état... Fait
+387 paquets peuvent être mis à jour. Exécutez « apt list --upgradable » pour les voir.</pre></li><br/>
+                <li>Puis nous devons installer quelques dépendances qui vont nous servir par la suite et servirons à Docker lui-même :<br/>
+                <pre><b>cordova@Ubuntu-VirtualBox:~$ sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common</b>
+Lecture des listes de paquets... Fait
+Construction de l'arbre des dépendances       
+Lecture des informations d'état... Fait
+Les paquets suivants ont été installés automatiquement et ne sont plus nécessaires :
+  libfprint-2-tod1 libllvm9
+Veuillez utiliser « sudo apt autoremove » pour les supprimer.
+Les paquets supplémentaires suivants seront installés : 
+  libcurl4 python3-software-properties software-properties-gtk
+Les NOUVEAUX paquets suivants seront installés :
+  curl gnupg-agent libcurl4
+Les paquets suivants seront mis à jour :
+  apt-transport-https ca-certificates python3-software-properties software-properties-common software-properties-gtk
+5 mis à jour, 3 nouvellement installés, 0 à enlever et 387 non mis à jour.
+Il est nécessaire de prendre 655 ko dans les archives.
+Après cette opération, 1 179 ko d'espace disque supplémentaires seront utilisés.
+Souhaitez-vous continuer ? [O/n] 
+Réception de :1 http://fr.archive.ubuntu.com/ubuntu focal-updates/main amd64 ca-certificates all 20201027ubuntu0.20.04.1 [153 kB]
+Réception de :2 http://fr.archive.ubuntu.com/ubuntu focal-updates/universe amd64 apt-transport-https all 2.0.2ubuntu0.2 [1 708 B]
+Réception de :3 http://fr.archive.ubuntu.com/ubuntu focal-updates/main amd64 libcurl4 amd64 7.68.0-1ubuntu2.4 [234 kB]
+Réception de :4 http://fr.archive.ubuntu.com/ubuntu focal-updates/main amd64 curl amd64 7.68.0-1ubuntu2.4 [161 kB]
+Réception de :5 http://fr.archive.ubuntu.com/ubuntu focal/universe amd64 gnupg-agent all 2.2.19-3ubuntu2 [5 236 B]
+Réception de :6 http://fr.archive.ubuntu.com/ubuntu focal-updates/main amd64 software-properties-common all 0.98.9.3 [10,6 kB]
+Réception de :7 http://fr.archive.ubuntu.com/ubuntu focal-updates/main amd64 software-properties-gtk all 0.98.9.3 [64,0 kB]
+Réception de :8 http://fr.archive.ubuntu.com/ubuntu focal-updates/main amd64 python3-software-properties all 0.98.9.3 [25,3 kB]
+655 ko réceptionnés en 0s (1 730 ko/s)                   
+Préconfiguration des paquets...</pre></li><br/>
+                <li>Nous ajoutons la clé GPG officielle de Docker :<br/>
+                <pre>cordova@Ubuntu-VirtualBox:~$<b> curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -</b>
+OK</pre></li><br/>
+                <li>Nous ajoutons le repository de Docker pour les versions stables :<br/>
+                <pre>cordova@Ubuntu-VirtualBox:~$<b> sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"</b>
+[sudo] Mot de passe de cordova : 
+Atteint :1 http://fr.archive.ubuntu.com/ubuntu focal InRelease
+Réception de :2 http://security.ubuntu.com/ubuntu focal-security InRelease [109 kB]  
+Atteint :3 http://fr.archive.ubuntu.com/ubuntu focal-updates InRelease                                                 
+Atteint :4 http://fr.archive.ubuntu.com/ubuntu focal-backports InRelease                                               
+Réception de :5 https://download.docker.com/linux/ubuntu focal InRelease [36,2 kB]                                    
+Atteint :6 https://download.mono-project.com/repo/ubuntu stable-focal InRelease     
+Atteint :7 http://packages.microsoft.com/repos/vscode stable InRelease    
+Réception de :8 https://download.docker.com/linux/ubuntu focal/stable amd64 Packages [5 637 B]
+151 ko réceptionnés en 1s (166 ko/s)
+Lecture des listes de paquets... Fait
+</pre></li><br/>
+                <li>On refait un <b>update</b> ça mange pas de pain ;-) juste un peu d'électrons ! :<br/>
+                <pre>cordova@Ubuntu-VirtualBox:~$<b> sudo apt-get update</b></pre></li><br/>
+                <li>On peut maintenant installer les outils Docker :<br/>
+                <pre>cordova@Ubuntu-VirtualBox:~$<b> sudo apt-get install docker-ce docker-ce-cli containerd.io</b>
+Lecture des listes de paquets... Fait
+Construction de l'arbre des dépendances       
+Lecture des informations d'état... Fait
+Les paquets suivants ont été installés automatiquement et ne sont plus nécessaires :
+  libfprint-2-tod1 libllvm9
+Veuillez utiliser « sudo apt autoremove » pour les supprimer.
+Les paquets supplémentaires suivants seront installés : 
+  docker-ce-rootless-extras git git-man liberror-perl pigz slirp4netns
+Paquets suggérés :
+  aufs-tools cgroupfs-mount | cgroup-lite git-daemon-run | git-daemon-sysvinit git-doc git-el git-email git-gui gitk gitweb
+  git-cvs git-mediawiki git-svn
+Les NOUVEAUX paquets suivants seront installés :
+  containerd.io docker-ce docker-ce-cli docker-ce-rootless-extras git git-man liberror-perl pigz slirp4netns
+0 mis à jour, 9 nouvellement installés, 0 à enlever et 387 non mis à jour.
+Il est nécessaire de prendre 109 Mo dans les archives.
+Après cette opération, 488 Mo d'espace disque supplémentaires seront utilisés.
+Souhaitez-vous continuer ? [O/n] 
+Réception de :1 http://fr.archive.ubuntu.com/ubuntu focal/universe amd64 pigz amd64 2.4-1 [57,4 kB]
+Réception de :2 http://fr.archive.ubuntu.com/ubuntu focal/main amd64 liberror-perl all 0.17029-1 [26,5 kB]
+Réception de :3 http://fr.archive.ubuntu.com/ubuntu focal/main amd64 git-man all 1:2.25.1-1ubuntu3 [884 kB]
+Réception de :4 https://download.docker.com/linux/ubuntu focal/stable amd64 containerd.io amd64 1.4.3-1 [28,1 MB]
+Réception de :5 http://fr.archive.ubuntu.com/ubuntu focal/main amd64 git amd64 1:2.25.1-1ubuntu3 [4 554 kB]
+Réception de :6 https://download.docker.com/linux/ubuntu focal/stable amd64 docker-ce-cli amd64 5:20.10.1~3-0~ubuntu-focal [41,4 MB]
+Réception de :7 https://download.docker.com/linux/ubuntu focal/stable amd64 docker-ce amd64 5:20.10.1~3-0~ubuntu-focal [24,8 MB]   
+Réception de :8 https://download.docker.com/linux/ubuntu focal/stable amd64 docker-ce-rootless-extras amd64 5:20.10.1~3-0~ubuntu-focal [8 908 kB]
+Réception de :9 http://fr.archive.ubuntu.com/ubuntu focal/universe amd64 slirp4netns amd64 0.4.3-1 [74,3 kB]                       
+109 Mo réceptionnés en 12s (9 190 ko/s)                                                                                            
+Sélection du paquet pigz précédemment désélectionné.
+(Lecture de la base de données... 178951 fichiers et répertoires déjà installés.)
+Préparation du dépaquetage de .../0-pigz_2.4-1_amd64.deb ...
+Dépaquetage de pigz (2.4-1) ...
+Sélection du paquet containerd.io précédemment désélectionné.
+Préparation du dépaquetage de .../1-containerd.io_1.4.3-1_amd64.deb ...
+Dépaquetage de containerd.io (1.4.3-1) ...
+Sélection du paquet docker-ce-cli précédemment désélectionné.
+Préparation du dépaquetage de .../2-docker-ce-cli_5%3a20.10.1~3-0~ubuntu-focal_amd64.deb ...
+Dépaquetage de docker-ce-cli (5:20.10.1~3-0~ubuntu-focal) ...
+Sélection du paquet docker-ce précédemment désélectionné.
+Préparation du dépaquetage de .../3-docker-ce_5%3a20.10.1~3-0~ubuntu-focal_amd64.deb ...
+Dépaquetage de docker-ce (5:20.10.1~3-0~ubuntu-focal) ...
+Sélection du paquet docker-ce-rootless-extras précédemment désélectionné.
+Préparation du dépaquetage de .../4-docker-ce-rootless-extras_5%3a20.10.1~3-0~ubuntu-focal_amd64.deb ...
+Dépaquetage de docker-ce-rootless-extras (5:20.10.1~3-0~ubuntu-focal) ...
+Sélection du paquet liberror-perl précédemment désélectionné.
+Préparation du dépaquetage de .../5-liberror-perl_0.17029-1_all.deb ...
+Dépaquetage de liberror-perl (0.17029-1) ...
+Sélection du paquet git-man précédemment désélectionné.
+Préparation du dépaquetage de .../6-git-man_1%3a2.25.1-1ubuntu3_all.deb ...
+Dépaquetage de git-man (1:2.25.1-1ubuntu3) ...
+Sélection du paquet git précédemment désélectionné.
+Préparation du dépaquetage de .../7-git_1%3a2.25.1-1ubuntu3_amd64.deb ...
+Dépaquetage de git (1:2.25.1-1ubuntu3) ...
+Sélection du paquet slirp4netns précédemment désélectionné.
+Préparation du dépaquetage de .../8-slirp4netns_0.4.3-1_amd64.deb ...
+Dépaquetage de slirp4netns (0.4.3-1) ...
+Paramétrage de slirp4netns (0.4.3-1) ...
+Paramétrage de liberror-perl (0.17029-1) ...
+Paramétrage de containerd.io (1.4.3-1) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/containerd.service → /lib/systemd/system/containerd.service.
+Paramétrage de docker-ce-cli (5:20.10.1~3-0~ubuntu-focal) ...
+Paramétrage de pigz (2.4-1) ...
+Paramétrage de git-man (1:2.25.1-1ubuntu3) ...
+Paramétrage de docker-ce (5:20.10.1~3-0~ubuntu-focal) ...
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service → /lib/systemd/system/docker.service.
+Created symlink /etc/systemd/system/sockets.target.wants/docker.socket → /lib/systemd/system/docker.socket.
+Paramétrage de git (1:2.25.1-1ubuntu3) ...
+Paramétrage de docker-ce-rootless-extras (5:20.10.1~3-0~ubuntu-focal) ...
+Traitement des actions différées (« triggers ») pour man-db (2.9.1-1) ...
+Traitement des actions différées (« triggers ») pour systemd (245.4-4ubuntu3.2) ...</pre></li><br/>
+                <li>Il est possible de lister les versions de Docker disponibles dans notre dépôt :<br/>
+                <pre>cordova@Ubuntu-VirtualBox:~$<b> sudo apt-cache madison docker-ce</b>
+docker-ce | 5:20.10.1~3-0~ubuntu-focal | https://download.docker.com/linux/ubuntu focal/stable amd64 Packages
+docker-ce | 5:20.10.0~3-0~ubuntu-focal | https://download.docker.com/linux/ubuntu focal/stable amd64 Packages
+docker-ce | 5:19.03.14~3-0~ubuntu-focal | https://download.docker.com/linux/ubuntu focal/stable amd64 Packages
+docker-ce | 5:19.03.13~3-0~ubuntu-focal | https://download.docker.com/linux/ubuntu focal/stable amd64 Packages
+docker-ce | 5:19.03.12~3-0~ubuntu-focal | https://download.docker.com/linux/ubuntu focal/stable amd64 Packages
+docker-ce | 5:19.03.11~3-0~ubuntu-focal | https://download.docker.com/linux/ubuntu focal/stable amd64 Packages
+docker-ce | 5:19.03.10~3-0~ubuntu-focal | https://download.docker.com/linux/ubuntu focal/stable amd64 Packages
+docker-ce | 5:19.03.9~3-0~ubuntu-focal | https://download.docker.com/linux/ubuntu focal/stable amd64 Packages</pre></li><br/>
+                <li> Il est donc possible d'installer une version spécifiques de Docker via la commande suivante :<br/>
+                <pre><b>sudo apt-get install docker-ce=&lt;VERSION_STRING&gt; docker-ce-cli=&lt;VERSION_STRING&gt; containerd.io</b></pre><br/>
+                Avec <b>&lt;VERSION_STRING&gt;</b> est la chaîne de la deuxième colonne de notre <b>apt cache</b> précédent.</li><br/>
+                <li>Vous pouvez vérifier que tous s'estbien installé en exécutant <br/>
+                <pre>cordova@Ubuntu-VirtualBox:~$<b> sudo docker run hello-world</b></pre><br/>
+                Cette commande télécharge une image de test et l'éxécute dans un container :<br/>
+                <pre>
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+0e03bdcc26d7: Pull complete 
+Digest: sha256:1a523af650137b8accdaed439c17d684df61ee4d74feac151b5b337bd29e7eec
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+</pre><br/>
+                L'installation de Docker est donc terminé, assonsmaintenant à la mise en place des containers pour le déploiement de notre applicatin Memory.</li>
+            </ul><br/>
+            <li><b>Déployer une application NodeJs - Express / MongoDB</b></li><br/>
+            <ul>
+                <li>Se placer dans le dossier de l'application (<b>"serveur"</b>) après être passé "root" (sudo -s). Il y en a marre de sudo à chaque ligne de commande ;-)<br/>
+                <pre>root@Ubuntu-VirtualBox:/home/cordova#<b> cd oclock/serveur/</b>
+root@Ubuntu-VirtualBox:/home/cordova#<b> vi Dockerfile</b></pre><br/>
+                Nous devons créer un fichier nommé <b>"Dockerfile"</b> qui va décrire note premier conteneur. Il possèdera un environnement d'éxécuton "NodeJs" :
+                <pre><b>
+FROM node:12.4
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 8081
+
+CMD [ "node", "./bin/www" ]
+</b></pre></li><br/>
+                <li>Nous allons maintenant construire le conteneur via la commande build : <br/>
+                <pre>root@Ubuntu-VirtualBox:/home/cordova/oclock/serveur# <b>docker build .</b><br/>
+Sending build context to Docker daemon  50.91MB
+Step 1/6 : FROM node:12.4
+12.4: Pulling from library/node
+6f2f362378c5: Pull complete 
+494c27a8a6b8: Pull complete 
+7596bb83081b: Pull complete 
+372744b62d49: Pull complete 
+615db220d76c: Pull complete 
+afaefeaac9ee: Pull complete 
+22d677ae7b14: Pull complete 
+954f64c2b02a: Pull complete 
+3a0d282381d6: Pull complete 
+Digest: sha256:ff37127378242accaa80c6c3426d02d3f749c7b220401f791eda5c954a60ed75
+Status: Downloaded newer image for node:12.4
+ ---> b074182f4154
+Step 2/6 : WORKDIR /usr/src/app
+ ---> Running in e399ee9f047b
+Removing intermediate container e399ee9f047b
+ ---> 8a87128c2a4e
+Step 3/6 : COPY package*.json ./
+ ---> 711a0bed7129
+Step 4/6 : RUN npm install
+ ---> Running in 7008c66d4af9
+added 139 packages from 226 contributors and audited 140 packages in 3.621s
+found 0 vulnerabilities
+
+Removing intermediate container 7008c66d4af9
+ ---> 5a34d35ad3b1
+Step 5/6 : COPY . .
+ ---> 0345bba2f756
+Step 6/6 : EXPOSE 8081
+ ---> Running in 0ac5112c35b1
+Removing intermediate container 0ac5112c35b1
+ ---> 025294d37459
+Successfully built 025294d37459</pre></li><br/>
+                <li>Nous allons pouvoir maintenant essayer de l'exécuter avec la commande docker run :<br/>
+                <pre>root@Ubuntu-VirtualBox:/home/cordova/oclock/serveur#<b> docker run -p 8081:8081 b074182f4154
+</b><br/>
+oclock   | TypeError: Cannot read property 'db' of undefined
+oclock   |     at /usr/src/app/appdyn.js:50:22
+</pre></li><br/>
+                <li>Nous allons avoir un léger soucis, nous n'avons pas encore de base de données MongoDB qui permet à notre application de se connecter.<br/>
+                Pour palier se problème nous allons utiliser "<b>"docker-compose"</b> qui permet de mettre en lien plusieurs containers : fichier <b>docker-compose.yml</b>
+                <pre><b>version: "3"
+services:
+  api:
+    container_name: oclock
+    build: . # Localisation du Dockerfile dans notre cas dans le dossier racine
+    ports:
+      - 8081:8081 # Nous exposons le port 8800
+    volumes:
+      - ./:/usr/src/app # Le volume du WORKDIR
+      - /usr/src/app/node_modules
+    environment:
+      - PORT=8081 # Nous pouvons définir ici plusieurs variables d'environnement
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:3.6
+    volumes:
+      - mongo-storage:/data/db # Nous pouvons ajouter un volume à ce container afin d
+e stocker les données de la base
+    expose:
+      - 27017
+    ports:
+      - 27017:27017
+
+# Définition des volumes:
+volumes:
+  mongo-storage:
+    driver: local
+</b></pre></li><br/>
+                <li>Nous devons modifier les URLs de connexion de notre application dans le dossier <b>serveur</b>. 
+                    Elles se trouvent dans le fichier de configuration globale : <b>config_minismall.json</b>,
+                    en remplaçant les adresses IP "127.0.0.1" par le nom du container de MongoDB défini dans le fichier "docker-compose" : <b>mongo</b><br/>
+                    <pre>{
+    "server": {
+        "port": 8081
+    },
+    "sequelize" : {
+        "dialect": "mariadb",
+        "host": "localhost",
+        "port": "3306",
+        "databaseName": "gretajs",
+        "userName": "admin",
+        "password": "azerty!"
+    },
+    <b>"mongodb" : {
+        "url": "mongodb://mongo:27017/gretajs"
+    },
+    "mongoose": {
+        "url":"mongodb://mongo:27017/gretajs"
+    }
+}</b></pre></li><br/>
+                <li>Enfin nous sommes presque au bout de notre configuration, il nous reste seulement à construire les containers via le fichier "docker-compose"<br/>
+                <pre>root@Ubuntu-VirtualBox:/home/cordova/oclock/serveur#<b> docker-compose build
+</b>
+mongo uses an image, skipping
+Building api
+Step 1/7 : FROM node:12.4
+12.4: Pulling from library/node
+6f2f362378c5: Already exists
+494c27a8a6b8: Already exists
+7596bb83081b: Already exists
+372744b62d49: Already exists
+615db220d76c: Already exists
+afaefeaac9ee: Already exists
+22d677ae7b14: Already exists
+954f64c2b02a: Already exists
+3a0d282381d6: Already exists
+Digest: sha256:ff37127378242accaa80c6c3426d02d3f749c7b220401f791eda5c954a60ed75
+Status: Downloaded newer image for node:12.4
+ ---> b074182f4154
+Step 2/7 : WORKDIR /usr/src/app
+ ---> Running in 0bfcf356bb66
+Removing intermediate container 0bfcf356bb66
+ ---> 96cef7830cd7
+Step 3/7 : COPY package*.json ./
+ ---> 7a20fb263cfa
+Step 4/7 : RUN npm install
+ ---> Running in 183182e73244
+added 139 packages from 226 contributors and audited 140 packages in 3.748s
+found 0 vulnerabilities
+
+Removing intermediate container 183182e73244
+ ---> a9e6750b8933
+Step 5/7 : COPY . .
+ ---> 53f13b8cc42c
+Step 6/7 : EXPOSE 8081
+ ---> Running in bed12de72531
+Removing intermediate container bed12de72531
+ ---> 258204d1cc23
+Step 7/7 : CMD [ "node", "./bin/www" ]
+ ---> Running in 6d05acf52a77
+Removing intermediate container 6d05acf52a77
+ ---> 25eba14972f8
+Successfully built 25eba14972f8
+Successfully tagged serveur_api:latest
+</pre></li><br/>
+                <li>On peut vérifier que les containers sont créés: via la commande <b>docker images</b><br/>
+                <pre>root@Ubuntu-VirtualBox:/home/cordova/oclock/serveur#<b> docker images</b>
+REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
+serveur_api   latest    25eba14972f8   46 seconds ago   986MB
+node          12.4      b074182f4154   18 months ago    906MB
+</pre></li><br/>
+                <li> Puis il nous reste juste à exécuter notre environnement via la commande <b>"docker-compose up"</b> :<br/>
+                <pre>root@Ubuntu-VirtualBox:/home/cordova/oclock/serveur#<b> docker-compose up</b>
+Creating network "serveur_default" with the default driver
+Creating volume "serveur_mongo-storage" with local driver
+Pulling mongo (mongo:3.6)...
+3.6: Pulling from library/mongo
+be8ec4e48d7f: Pull complete
+33b8b485aff0: Pull complete
+d887158cc58c: Pull complete
+05895bb28c18: Pull complete
+554956c5520b: Pull complete
+1129bf37b6f0: Pull complete
+0a961c831444: Pull complete
+002e342bfc39: Pull complete
+67b67cb953c6: Pull complete
+35ef1c541d5d: Pull complete
+34397889ad3a: Pull complete
+8d302d4d0319: Pull complete
+d1415a657172: Pull complete
+Digest: sha256:ae7731601ea05d55720c1227e10527231d6c44c01b829b5f0de65c5977cfec0b
+Status: Downloaded newer image for mongo:3.6
+Creating serveur_mongo_1 ... 
+Starting serveur_mongo_1 ... done
+Creating oclock          ... done
+Attaching to serveur_mongo_1, oclock
+mongo_1  | 2020-12-27T16:24:59.484+0000 I CONTROL  [initandlisten] MongoDB starting : pid=1 port=27017 dbpath=/data/db 64-bit host=09f659a50634
+mongo_1  | 2020-12-27T16:24:59.484+0000 I CONTROL  [initandlisten] db version v3.6.21
+mongo_1  | 2020-12-27T16:24:59.484+0000 I CONTROL  [initandlisten] git version: 1cd2db51dce4b16f4bc97a75056269df0dc0bddb
+mongo_1  | 2020-12-27T16:24:59.484+0000 I CONTROL  [initandlisten] OpenSSL version: OpenSSL 1.0.2g  1 Mar 2016
+mongo_1  | 2020-12-27T16:24:59.484+0000 I CONTROL  [initandlisten] allocator: tcmalloc
+mongo_1  | 2020-12-27T16:24:59.484+0000 I CONTROL  [initandlisten] modules: none
+mongo_1  | 2020-12-27T16:24:59.484+0000 I CONTROL  [initandlisten] build environment:
+mongo_1  | 2020-12-27T16:24:59.484+0000 I CONTROL  [initandlisten]     distmod: ubuntu1604
+mongo_1  | 2020-12-27T16:24:59.484+0000 I CONTROL  [initandlisten]     distarch: x86_64
+mongo_1  | 2020-12-27T16:24:59.484+0000 I CONTROL  [initandlisten]     target_arch: x86_64
+mongo_1  | 2020-12-27T16:24:59.484+0000 I CONTROL  [initandlisten] options: { net: { bindIpAll: true } }
+(...)
+mongo_1  | 2020-12-27T16:25:01.032+0000 I COMMAND  [LogicalSessionCacheRefresh] command config.$cmd command: createIndexes { createIndexes: "system.sessions", indexes: [ { key: { lastUse: 1 }, name: "lsidTTLIndex", expireAfterSeconds: 1800 } ], $db: "config" } numYields:0 reslen:98 locks:{ Global: { acquireCount: { r: 2, w: 2 } }, Database: { acquireCount: { w: 2, W: 1 } }, Collection: { acquireCount: { w: 2 } } } protocol:op_msg 214ms
+oclock   | partials registered
+oclock   | from getView 
+oclock   | GET / 200 34.622 ms - 4987
+oclock   | GET /stylesheets/bootstrap-3.3.7/css/bootstrap.css 200 2.943 ms - 146005
+oclock   | GET /stylesheets/style.css 200 0.618 ms - 3425
+oclock   | GET /stylesheets/jquery.dataTables.min.css 200 0.493 ms - 13918
+oclock   | GET /stylesheets/dataTables.bootstrap4.min.css 200 0.501 ms - 5242
+oclock   | GET /javascripts/jquery-3.5.0.min.js 200 0.434 ms - 89493
+oclock   | GET /javascripts/jquery.dataTables.min.js 200 0.811 ms - 84321
+oclock   | GET /javascripts/ace_src/ace.js 200 5.435 ms - 718184
+oclock   | GET /javascripts/aceeditor.js 200 0.506 ms - 2573
+oclock   | GET /favicon.ico 200 0.504 ms - 2238
+clock   | from getView 
+oclock   | GET /docihm 200 10.025 ms - 3036
+oclock   | GET /stylesheets/bootstrap-3.3.7/css/bootstrap.css 304 0.427 ms - -
+oclock   | GET /stylesheets/style.css 304 0.311 ms - -
+oclock   | GET /stylesheets/jquery.dataTables.min.css 304 0.303 ms - -
+oclock   | GET /stylesheets/dataTables.bootstrap4.min.css 304 0.362 ms - -
+oclock   | GET /javascripts/jquery-3.5.0.min.js 304 0.349 ms - -
+oclock   | GET /javascripts/jquery.dataTables.min.js 304 0.288 ms - -
+oclock   | GET /javascripts/ace_src/ace.js 304 0.565 ms - -
+oclock   | GET /javascripts/aceeditor.js 304 0.597 ms - -
+oclock   | GET /images/docihm.png 200 1.994 ms - 340335
+oclock   | from getView 
+oclock   | GET /docback 200 6.764 ms - 22321
+oclock   | GET /stylesheets/bootstrap-3.3.7/css/bootstrap.css 304 0.356 ms - -
+oclock   | GET /stylesheets/style.css 304 0.275 ms - -
+oclock   | GET /stylesheets/jquery.dataTables.min.css 304 0.326 ms - -
+oclock   | GET /stylesheets/dataTables.bootstrap4.min.css 304 0.294 ms - -
+oclock   | GET /javascripts/jquery-3.5.0.min.js 304 0.288 ms - -
+oclock   | GET /javascripts/jquery.dataTables.min.js 304 0.375 ms - -
+oclock   | GET /javascripts/aceeditor.js 304 0.608 ms - -
+oclock   | GET /javascripts/ace_src/ace.js 304 0.838 ms - -
+oclock   | GET /images/docback_http_request.png 200 1.170 ms - 102805
+oclock   | GET /images/docback_arbo.png 200 1.104 ms - 230858
+oclock   | GET /javascripts/ace_src/theme-dracula.js 200 0.813 ms - 3240
+oclock   | GET /javascripts/ace_src/mode-json.js 200 0.514 ms - 10577
+oclock   | GET /javascripts/ace_src/mode-javascript.js 200 0.532 ms - 31823
+oclock   | GET /javascripts/ace_src/worker-json.js 200 0.634 ms - 50736
+oclock   | GET /javascripts/ace_src/worker-json.js 304 0.364 ms - -
+oclock   | GET /javascripts/ace_src/worker-javascript.js 200 0.546 ms - 721786
+oclock   | GET /javascripts/ace_src/worker-javascript.js 200 0.520 ms - 721786
+mongo_1  | 2020-12-27T16:40:02.569+0000 I NETWORK  [listener] connection accepted from 172.18.0.3:43510 #3 (3 connections now open)
+mongo_1  | 2020-12-27T16:40:02.570+0000 I NETWORK  [conn3] received client metadata from 172.18.0.3:43510 conn3: { driver: { name: "nodejs|Mongoose", version: "3.6.3" }, os: { type: "Linux", name: "linux", architecture: "x64", version: "5.4.0-48-generic" }, platform: "'Node.js v12.4.0, LE (unified)", version: "3.6.3|5.11.8" }
+oclock   | connexion depuis Finder :  []
+oclock   | GET /memory 200 34.148 ms - 3713
+oclock   | GET /javascripts/jquery-3.5.0.min.js 304 0.365 ms - -
+oclock   | GET /javascripts/jquery.dataTables.min.js 304 0.258 ms - -
+oclock   | GET /javascripts/ace_src/ace.js 304 0.274 ms - -
+oclock   | GET /javascripts/aceeditor.js 304 0.292 ms - -
+oclock   | GET /javascripts/memoryfs.js 200 0.562 ms - 15323
+oclock   | GET /stylesheets/dataTables.bootstrap4.min.css 200 1.840 ms - 5242
+oclock   | GET /stylesheets/jquery.dataTables.min.css 200 2.116 ms - 13918
+oclock   | GET /stylesheets/style.css 200 2.411 ms - 3425
+oclock   | GET /stylesheets/bootstrap-3.3.7/css/bootstrap.css 200 2.650 ms - 146005
+oclock   | GET /favicon.ico 200 0.578 ms - 2238
+oclock   | GET /javascripts/French.json 200 0.591 ms - 1154
+oclock   | GET /images/sort_both.png 500 5.476 ms - 3204
+oclock   | GET /images/sort_asc.png 500 3.961 ms - 3204
+oclock   | GET /images/cards.png 200 1.042 ms - 123758
+oclock   | GET /images/bgcard.png 200 0.563 ms - 3018
+oclock   | req.originalUrl :  /setmemscore?nickname=steph_docker&score=5&format=2x2
+mongo_1  | 2020-12-27T16:40:41.757+0000 I STORAGE  [conn3] createCollection: gretajs.memory with generated UUID: abff6ee4-f0c8-421b-af1b-b7f1df7b6448
+oclock   | insertOne mongoose:  [
+oclock   |   {
+oclock   |     nickname: 'steph_docker',
+oclock   |     score: 5,
+oclock   |     format: '2x2',
+oclock   |     _id: 5fe8b9094a4e91bf33749d13,
+oclock   |     __v: 0
+oclock   |   }
+oclock   | ]
+oclock   | result into InsertOne :  [
+oclock   |   {
+oclock   |     _id: 5fe8b9094a4e91bf33749d13,
+oclock   |     nickname: 'steph_docker',
+oclock   |     score: 5,
+oclock   |     format: '2x2',
+oclock   |     __v: 0
+oclock   |   }
+oclock   | ]
+oclock   | GET /setmemscore?nickname=steph_docker&score=5&format=2x2 200 155.776 ms - 5150
+oclock   | connexion depuis Finder :  [
+oclock   |   {
+oclock   |     _id: 5fe8b9094a4e91bf33749d13,
+oclock   |     nickname: 'steph_docker',
+oclock   |     score: 5,
+oclock   |     format: '2x2',
+oclock   |     __v: 0
+oclock   |   }
+oclock   | ]
+oclock   | GET /memory 200 20.306 ms - 3940
+oclock   | GET /stylesheets/jquery.dataTables.min.css 304 0.462 ms - -
+oclock   | GET /javascripts/jquery-3.5.0.min.js 304 0.329 ms - -
+oclock   | GET /javascripts/jquery.dataTables.min.js 304 0.578 ms - -
+oclock   | GET /javascripts/ace_src/ace.js 304 0.328 ms - -
+oclock   | GET /javascripts/aceeditor.js 304 0.361 ms - -
+oclock   | GET /javascripts/memoryfs.js 304 0.390 ms - -
+oclock   | GET /stylesheets/bootstrap-3.3.7/css/bootstrap.css 200 0.564 ms - 146005
+oclock   | GET /stylesheets/style.css 200 0.783 ms - 3425
+oclock   | GET /stylesheets/dataTables.bootstrap4.min.css 200 0.483 ms - 5242
+oclock   | GET /javascripts/French.json 200 0.649 ms - 1154
+</pre></li><br/>
+                <li>Il suffit de lancer le navigateur avec l'adresse de la machine physique et le port 8081, 
+                    comme nous avons défini dans docker que nous exposions le port 8081 et que nous avons 
+                    fait un NAT sur le port 8081 en entrée de la machine physique. 
+                    Le serveur répond et affiche les logs ci-dessus :-)</li><br/>
+            </ul>
+        </ul>
+        <li>En conclusion, on peut noter que Docker est un outil pratique d'isolation des environnements d'exécution d'applications Web. C'est démarrable à chaud, cela permet de rendre scalable un serveur Web.</li>
+    </li>
+</ul><br/><br/>
