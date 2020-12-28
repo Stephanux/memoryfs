@@ -14,13 +14,13 @@
                 Le Docker hub pour retrouver une image déjà construite
                 <a href="https://hub.docker.com/search?q=&type=image">Docker-Hub</a>
             </li>
-            <li>Ce qu'il faut retenir c'est que Docker est un environnement d'éxécution de Linux isolés grâce à LXC (LinuX Containers).<br/>
-                 Mais ils partagent le même noyaux système, celui de la machine Hôte.<br/>
+            <li>Ce qu'il faut retenir c'est que Docker est un environnement d'exécution de Linux isolé grâce à LXC (LinuX Containers).<br/>
+                 Mais les conatiners partagent le même noyau système, celui de la machine Hôte.<br/>
                  Cette isolation peut se faire grâce aux <b>CGroups</b> (Control Groups). <br/>
-                 Les <b>Namespaces</b> permettent d'empêcher qu'un container accède à un autre conteneur
-                 sauf si vous l'avez explicitement définit (Docker-compose).
+                 Les <b>Namespaces</b> permettent d'empêcher qu'un container accède à un autre container
+                 sauf si vous l'avez explicitement défini (Docker-compose).
             </li>
-            <li>Screenshot de l'environnement en cours d'éxécution :<br/>
+            <li>Screenshot de l'environnement en cours d'exécution :<br/>
             <img src="images/docker_terminaux.png" /></li>
         </ul>
     </li>
@@ -43,7 +43,7 @@ Lecture des listes de paquets... Fait
 Construction de l'arbre des dépendances       
 Lecture des informations d'état... Fait
 387 paquets peuvent être mis à jour. Exécutez « apt list --upgradable » pour les voir.</pre></li><br/>
-                <li>Puis nous devons installer quelques dépendances qui vont nous servir par la suite et servirons à Docker lui-même :<br/>
+                <li>Puis nous devons installer quelques dépendances qui vont nous servir par la suite et serviront à Docker lui-même :<br/>
                 <pre><b>cordova@Ubuntu-VirtualBox:~$ sudo apt-get install \
     apt-transport-https \
     ca-certificates \
@@ -179,10 +179,10 @@ docker-ce | 5:19.03.12~3-0~ubuntu-focal | https://download.docker.com/linux/ubun
 docker-ce | 5:19.03.11~3-0~ubuntu-focal | https://download.docker.com/linux/ubuntu focal/stable amd64 Packages
 docker-ce | 5:19.03.10~3-0~ubuntu-focal | https://download.docker.com/linux/ubuntu focal/stable amd64 Packages
 docker-ce | 5:19.03.9~3-0~ubuntu-focal | https://download.docker.com/linux/ubuntu focal/stable amd64 Packages</pre></li><br/>
-                <li> Il est donc possible d'installer une version spécifiques de Docker via la commande suivante :<br/>
+                <li> Il est donc possible d'installer une version spécifique de Docker via la commande suivante :<br/>
                 <pre><b>sudo apt-get install docker-ce=&lt;VERSION_STRING&gt; docker-ce-cli=&lt;VERSION_STRING&gt; containerd.io</b></pre><br/>
-                Avec <b>&lt;VERSION_STRING&gt;</b> est la chaîne de la deuxième colonne de notre <b>apt cache</b> précédent.</li><br/>
-                <li>Vous pouvez vérifier que tous s'estbien installé en exécutant <br/>
+                Avec <b>&lt;VERSION_STRING&gt;</b> représentant la chaîne de la deuxième colonne de notre <b>apt cache</b> précédent.</li><br/>
+                <li>Vous pouvez vérifier que tout s'est bien installé en exécutant <br/>
                 <pre>cordova@Ubuntu-VirtualBox:~$<b> sudo docker run hello-world</b></pre><br/>
                 Cette commande télécharge une image de test et l'éxécute dans un container :<br/>
                 <pre>
@@ -213,14 +213,15 @@ Share images, automate workflows, and more with a free Docker ID:
 For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 </pre><br/>
-                L'installation de Docker est donc terminé, assonsmaintenant à la mise en place des containers pour le déploiement de notre applicatin Memory.</li>
+                L'installation de Docker est donc terminée.<br/> 
+                Passons maintenant à la mise en place des containers pour le déploiement de notre application Memory.</li>
             </ul><br/>
             <li><b>Déployer une application NodeJs - Express / MongoDB</b></li><br/>
             <ul>
                 <li>Se placer dans le dossier de l'application (<b>"serveur"</b>) après être passé "root" (sudo -s). Il y en a marre de sudo à chaque ligne de commande ;-)<br/>
                 <pre>root@Ubuntu-VirtualBox:/home/cordova#<b> cd oclock/serveur/</b>
 root@Ubuntu-VirtualBox:/home/cordova#<b> vi Dockerfile</b></pre><br/>
-                Nous devons créer un fichier nommé <b>"Dockerfile"</b> qui va décrire note premier conteneur. Il possèdera un environnement d'éxécuton "NodeJs" :
+                Nous devons créer un fichier nommé <b>"Dockerfile"</b> qui va décrire note premier conteneur. Il possèdera un environnement d'éxécution "NodeJs" :
                 <pre><b>
 FROM node:12.4
 
@@ -280,7 +281,7 @@ oclock   | TypeError: Cannot read property 'db' of undefined
 oclock   |     at /usr/src/app/appdyn.js:50:22
 </pre></li><br/>
                 <li>Nous allons avoir un léger soucis, nous n'avons pas encore de base de données MongoDB qui permet à notre application de se connecter.<br/>
-                Pour palier se problème nous allons utiliser "<b>"docker-compose"</b> qui permet de mettre en lien plusieurs containers : fichier <b>docker-compose.yml</b>
+                Pour pallier ce problème nous allons utiliser <b>"docker-compose"</b> qui permet de mettre en lien plusieurs containers : fichier <b>docker-compose.yml</b>
                 <pre><b>version: "3"
 services:
   api:
@@ -377,7 +378,7 @@ Removing intermediate container 6d05acf52a77
 Successfully built 25eba14972f8
 Successfully tagged serveur_api:latest
 </pre></li><br/>
-                <li>On peut vérifier que les containers sont créés: via la commande <b>docker images</b><br/>
+                <li>On peut vérifier que les containers sont créés via la commande : <b>docker images</b><br/>
                 <pre>root@Ubuntu-VirtualBox:/home/cordova/oclock/serveur#<b> docker images</b>
 REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
 serveur_api   latest    25eba14972f8   46 seconds ago   986MB
@@ -524,10 +525,9 @@ oclock   | GET /stylesheets/style.css 200 0.783 ms - 3425
 oclock   | GET /stylesheets/dataTables.bootstrap4.min.css 200 0.483 ms - 5242
 oclock   | GET /javascripts/French.json 200 0.649 ms - 1154
 </pre></li><br/>
-                <li>Il suffit de lancer le navigateur avec l'adresse de la machine physique et le port 8081, 
-                    comme nous avons défini dans docker que nous exposions le port 8081 et que nous avons 
-                    fait un NAT sur le port 8081 en entrée de la machine physique. 
-                    Le serveur répond et affiche les logs ci-dessus :-)</li><br/>
+                <li>Il suffit de lancer le navigateur avec l'adresse de la machine physique et le port 8081. 
+                    Comme nous avons défini dans le fichier docker_compose que nous exposions le port 8081 et que nous avons 
+                    fait un NAT sur ce même numéro de port en entrée de la machine physique, le serveur répond et affiche les logs ci-dessus :-)</li><br/>
             </ul>
         </ul>
         <li>En conclusion, on peut noter que Docker est un outil pratique d'isolation des environnements d'exécution d'applications Web. C'est démarrable à chaud, cela permet de rendre scalable un serveur Web.</li>
