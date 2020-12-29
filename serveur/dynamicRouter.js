@@ -15,6 +15,7 @@ function dynamicRouter(app) {
 /* Fonction qui permet d'aguiller les requêtes HTTP 
 vers le bon contrôleur en fonction de l'action du pathname  */
 function manageAction(req, res, next) {
+    console.log ("IP Client: " + req.ip || req.connection.remoteAddress);
     req.message = {};
     var path = req.originalUrl; // Le pathname après le port 3000 dans l'URL.
     if (path.includes("?")) {
