@@ -218,8 +218,17 @@ For more examples and ideas, visit:
             </ul><br/>
             <li><b>Déployer une application NodeJs - Express / MongoDB</b></li><br/>
             <ul>
+                <li>Récupérer sur mon dépôt git (https://www.github.com/Stephanux/memoryfs.git) le code source du projet<br/>
+                <pre><b>$ git clone https://github.com/Stephanux/memoryfs.git</b>
+Clonage dans 'memoryfs'...
+remote: Enumerating objects: 811, done.
+remote: Counting objects: 100% (811/811), done.
+remote: Compressing objects: 100% (446/446), done.
+remote: Total 811 (delta 454), reused 714 (delta 361), pack-reused 0
+Réception d'objets: 100% (811/811), 6.36 MiB | 1.45 MiB/s, fait.
+Résolution des deltas: 100% (454/454), fait.</pre></li><br/>
                 <li>Se placer dans le dossier de l'application (<b>"serveur"</b>) après être passé "root" (sudo -s). Il y en a marre de sudo à chaque ligne de commande ;-)<br/>
-                <pre>root@Ubuntu-VirtualBox:/home/cordova#<b> cd oclock/serveur/</b>
+                <pre>root@Ubuntu-VirtualBox:/home/cordova#<b> cd memoryfs/serveur/</b>
 root@Ubuntu-VirtualBox:/home/cordova#<b> vi Dockerfile</b></pre><br/>
                 Nous devons créer un fichier nommé <b>"Dockerfile"</b> qui va décrire note premier conteneur. Il possèdera un environnement d'éxécution "NodeJs" :
                 <pre><b>
